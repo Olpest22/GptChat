@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatGPT</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 20px;
+        border-radius: 5px;
+        -webkit-box-shadow: 2px 4px 35px -12px rgba(34, 60, 80, 0.2);
+        -moz-box-shadow: 2px 4px 35px -12px rgba(34, 60, 80, 0.2);
+        box-shadow: 2px 4px 35px -12px rgba(34, 60, 80, 0.2);
+      }
+      #chat {
+        margin-top: 20px;
+        border: 1px solid #ddd;
+        padding: 10px;
+        height: 300px;
+        overflow-y: scroll;
+      }
+      #userInput {
+        width: 100%;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 10;
+        padding-right: 0;
+        margin-top: 10px;
+      }
+      #submit {
+        padding: 10px 20px;
+        margin-top: 10px;
+        background-color: white;
+        border: none;
+        -webkit-box-shadow: 0px 0px 0px 3px rgba(0, 0, 0, 0.538);
+        -moz-box-shadow: 0px 0px 0px 3px rgba(0, 0, 0, 0.52);
+        box-shadow: 0px 0px 0px 3px rgba(0, 0, 0, 0.576);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ChatGPT model: gpt-3.5-turbo</h1>
+    <div id="chat" style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;"></div>
+    <input type="text" id="userInput" placeholder="Введите ваше сообщение..." />
+    <button id="submit">Отправить</button>
+    <script>
+      const chatDiv = document.getElementById("chat");
+      const userInput = document.getElementById("userInput");
+      const submitButton = document.getElementById("submit");
+  
+      const sendMessage = async () => {
+        const userMessage = userInput.value.trim(); // Удаляем пробелы
+        if (!userMessage) return;
+  
+        const userMessageDiv = document.createElement('div');
+        userMessageDiv.innerHTML = `<strong>Вы:</strong> ${userMessage}`;
+        chatDiv.appendChild(userMessageDiv);
+        userInput.value = ""; // Очистить поле ввода
+  
+        try {
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // Задержка в 1 секунду перед отправкой запроса
+          const response = await fetch(`/getResponse?userPrompt=${encodeURIComponent(userMessage)}`);
+          if (!response.ok) {
+            throw new Error("Ошибка при получении ответа");
+          }
+          const data = await response.json();
+  
+          const gptMessageDiv = document.createElement('div');
+          gptMessageDiv.innerHTML = `<strong>GPT:</strong> ${data.reply}`;
+          chatDiv.appendChild(gptMessageDiv);
+  
+          chatDiv.scrollTop = chatDiv.scrollHeight; // Прокрутка вниз
+        } catch (error) {
+          console.error(error);
+          const errorMessageDiv = document.createElement('div');
+          errorMessageDiv.style.color = "red";
+          errorMessageDiv.textContent = `Ошибка: ${error.message}`;
+          chatDiv.appendChild(errorMessageDiv);
+        }
+      };
+  
+      // Обработчик события для кнопки "Отправить"
+      submitButton.addEventListener("click", sendMessage);
+      
+      // Обработчик события для нажатия клавиши Enter
+      userInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+          sendMessage();
+        }
+      });
+    </script>
+  </body>
+  
+</html>
