@@ -2,7 +2,8 @@ const express = require('express');
 const OpenAI = require('openai');
 const cors = require('cors');
 const path = require('path');
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
+const { env } = require('process');
 const app = express();
 
 dotenv.config()
@@ -11,7 +12,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY // Используйте переменные окружения
+    apiKey: '' // Используйте переменные окружения
 });
 
 app.get('/getResponse', async (req, res) => {
