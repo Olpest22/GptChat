@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname,)));
 
 const openai = new OpenAI({
-    apiKey: '' // Используйте переменные окружения
+    apiKey: 'sk-WZdFUHDp8RhAjBd16xnRN99_f_AwEuroHN_zb3sgZZT3BlbkFJDRBqWFOrkJeAwALCy2-TPABhp9RXtbqOJ0Tu6ZAkIA' // Используйте переменные окружения
 });
 
 app.get('/getResponse', async (req, res) => {
